@@ -1,21 +1,20 @@
-# hexman-scaner
-cms安全扫描<br>
-学习python时候练手的小工具：
+# cms安全检测工具
+学习python时候练手的小工具：<br>
 已支持功能：<br>
-c段，旁站扫描<br>
-后台扫描<br>
-使用方法：
-main -h
+获取c段，旁站<br>
+后台扫描<br>单网站cms识别<br>
+使用方法：详见main -h
 <br>
-默认（cms识别+漏洞扫描:#未完成
-main.py -u http://www.xx.com/
+cms识别<br>
+`main.py -r -u http://www.xx.com/`
 <br>
-c段扫描：<br>
-main.py -c -u http://www.xx.com/
+c段获取<br>
+`main.py -c -u http://www.xx.com/`
 <br>
-旁站扫描：
-<br>main.py -p -u http://www.xx.com/
+旁站：
+<br>`main.py -p -u http://www.xx.com/`
+<br>后台扫描
 <br>
-main.py -d dir.txt -u http://www.xx.com/
+`main.py -d dir.txt -u http://www.xx.com/`
 <br>
-#正在开发中：cms识别，cms漏洞检测
+#正在开发中：批量cms识别，批量cms漏洞检测
