@@ -10,12 +10,12 @@ import requests,json, hashlib,gevent,time
 
 __author__ = 'Hexman'
 
-
+'''
 def cmsreg_main_thread():
     pass
 
 
-'''
+
 def cmsreg_start_thread(url):
     cmsreg_ThreadPool = ThreadPool(processes=20)
     cms_result = [cmsreg_thread.get() for cmsreg_thread in [threadpool.map_async(cmsreg_main_thread, url)]]
