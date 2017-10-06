@@ -15,7 +15,7 @@ def cmsreg_main_thread():
     pass
 
 
-
+'''
 def cmsreg_start_thread(url):
     cmsreg_ThreadPool = ThreadPool(processes=20)
     cms_result = [cmsreg_thread.get() for cmsreg_thread in [threadpool.map_async(cmsreg_main_thread, url)]]
@@ -28,7 +28,7 @@ def cmsreg_start_processes():
     cmsreg_ProcessesPool = multiprocessing.Pool(processes=20)
     result_url = [cms_reg.get() for cms_reg in [threadpool.map_async(cmsreg_start_thread, out)]]
 
-
+'''
 
 class gwhatweb(object):
     def __init__(self, url):
