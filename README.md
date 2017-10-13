@@ -18,3 +18,6 @@ c段获取<br>
 `main.py -d dir.txt -u http://www.xx.com/`
 <br>
 #正在开发中：批量cms识别，批量cms漏洞检测
+#后台扫描部分可能会用gevent重写下
+博客：http://hexlt.org
+<br>（欢迎py♂交易啊
