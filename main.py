@@ -132,10 +132,11 @@ def pangurl(ip):
             continue
         elif i == "https:":
             continue
+        elif i=="a class=\"sb_metalink\" target=\"_blank\" href=\"http:":
+            continue
         else:
             print (Fore.LIGHTGREEN_EX + "[+]" + i)
     return pangs
-
 
 
 def caddress(ip):
