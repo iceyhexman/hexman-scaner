@@ -10,6 +10,9 @@ import requests,json, hashlib,gevent,time
 
 __author__ = 'Hexman'
 
+blacklist=["p.chinaz.com","https:","a class=\"sb_metalink\" target=\"_blank\" href=\"http:","a class=\"sb_metalink\" target=\"_blank\" href=\"https:"]
+
+
 '''
 def cmsreg_main_thread():
     pass
@@ -29,6 +32,21 @@ def cmsreg_start_processes():
     result_url = [cms_reg.get() for cms_reg in [threadpool.map_async(cmsreg_start_thread, out)]]
 
 '''
+
+
+
+def removeBlacklists(lists):
+    tmplist=lists[:]
+    for i in lists:
+        if i in blacklist:
+            tmplist.remove(i)
+        elif i.count("sb_metalink"):
+            tmplist.remove(i)
+            tmplist.append(i[i.index(">") + 1:i.index("<") if i.count("<") else None])
+    return tmplist
+
+
+
 
 class gwhatweb(object):
     def __init__(self, url):
@@ -53,7 +71,6 @@ class gwhatweb(object):
     def _worker(self):
         data = self.tasks.get()
         test_url = self.url + data["url"]
-        rtext = ''
         try:
             r = requests.get(test_url, timeout=10)
             if (r.status_code != 200):
@@ -92,6 +109,7 @@ class gwhatweb(object):
 
 
 
+
 def urlscaner(path):
     try:
         url = "%s%s" % (domain_name, path)
@@ -126,17 +144,13 @@ def pangurl(ip):
     reg_url = r'<cite>(.*?)</cite>'
     reg_url_res = re.compile(reg_url)
     pangs=[x.split("/")[0][::-1].rstrip(">etic<")[::-1] for x in re.findall(reg_url_res, content)]
-    printout=pangs
+    printout=removeBlacklists(pangs)
     for i in printout:
-        if i=="p.chinaz.com":
-            continue
-        elif i == "https:":
-            continue
-        elif i=="a class=\"sb_metalink\" target=\"_blank\" href=\"http:":
-            continue
-        else:
-            print (Fore.LIGHTGREEN_EX + "[+]" + i)
+        print (Fore.LIGHTGREEN_EX + "[+]" + i)
     return pangs
+
+
+
 
 
 def caddress(ip):
@@ -144,6 +158,7 @@ def caddress(ip):
     for i in range(256):
         ciplist[i]=".".join(ip.split(".")[0:3])+"."+str(i)
     return ciplist
+
 
 
 
@@ -158,9 +173,10 @@ def caddlist():
             for _count in res:
                 for lis in _count:
                     outa.append(lis)
-    print (Fore.LIGHTBLUE_EX+"c address gets done.")
     print (Fore.LIGHTBLUE_EX+"Sub-process(es) done.")
     return outa
+
+
 
 
 
@@ -180,12 +196,7 @@ if __name__ == "__main__":
         if(options.pzhan and options.caddress):
             urls=caddlist()
         elif(options.pzhan):
-             pang_out=pangurl(ip)
-             for i in pang_out:
-                if i == "p.chinaz.com":
-                    pang_out.remove("p.chinaz.com")
-                elif i == "https:":
-                    pang_out.remove("https:")
+             pang_out=removeBlacklists(pangurl(ip))
              if pang_out!=[]:
                 for pang_strs in pang_out:
                     print (Fore.LIGHTGREEN_EX + "[+]" + pang_strs)
@@ -195,17 +206,16 @@ if __name__ == "__main__":
             urls=caddlist()
         if urls!=[]:
             out= {}.fromkeys(urls).keys()
-            print (Fore.LIGHTBLUE_EX + "[*]starting remove the same website")
-            if "p.chinaz.com" in out:
-                out.remove("p.chinaz.com")
-            elif "https:" in out:
-                out.remove("https:")
+            print (Fore.LIGHTBLUE_EX + "[*]Removed same website.")
+            out=removeBlacklists(out)
             with open('websites.txt', 'w') as f:
                 for strs in out:
-                    f.write(strs + "\n")
-            print (Fore.LIGHTGREEN_EX + "[*]done")
-            print (Fore.LIGHTGREEN_EX + "[*]save as websites.txt")
-            #print out
+                    if strs==None:
+                        continue
+                    else:
+                        f.write(strs + "\n")
+            print (Fore.LIGHTBLUE_EX + "[*]Save as websites.txt.Total:"+str(len(out)))
+
         if options.dir:
             start_urlscan = time.clock()
             domain_name = options.url
