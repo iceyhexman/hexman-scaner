@@ -177,7 +177,29 @@ def caddlist():
     return outa
 
 
+'''
+#下面是临时用来获取网址的..
 
+def baddlist(ip):
+    biplist=range(2)
+    for i in range(2):
+        biplist[i]=caddress(".".join(ip.split(".")[0:2])+"."+str(i)+".1")
+    outa = []
+    pool = multiprocessing.Pool(processes=20)
+    #下面一句有问题
+
+    result = [x.get() for x in [pool.map_async(pangurl, biplist[tmp for tmp in range(256)])]]
+    pool.close()
+    pool.join()
+    for res in result:
+        if res != []:
+            for _count in res:
+                for lis in _count:
+                    outa.append(lis)
+    print (Fore.LIGHTBLUE_EX + "Sub-process(es) done.")
+    return outa
+
+'''
 
 
 if __name__ == "__main__":
@@ -186,24 +208,32 @@ if __name__ == "__main__":
     parser.add_option("-u", "--url", action='store', dest="url", default=False, help="url")
     parser.add_option("-c", "--CDuan", action="store_true", dest="caddress", default=False, help="c address")
     parser.add_option("-p", "--PangZhan", action="store_true", dest="pzhan", default=False, help="same host")
-    parser.add_option("-a", "--auto", action="store_true", dest="auto", default=False, help="auto scan")
+    parser.add_option("-b", "--baddress", action="store_true", dest="baddress", default=False, help="b address")
     parser.add_option("-d", "--dic", action="store", dest="dir", default=False,help="dic file")
     parser.add_option("-r", "--reg", action="store_true", dest="cms", default=False, help="cms reg")
     (options, args) = parser.parse_args()
     if(options.url):
         urls=[]
-        ip = socket.gethostbyname(options.url.strip("https://"))
-        if(options.pzhan and options.caddress):
-            urls=caddlist()
-        elif(options.pzhan):
+        ip = socket.gethostbyname(options.url.split("/")[2])
+        #b段
+        '''
+        if options.baddress:
+            urls=baddlist(ip)
+            
+        '''
+        #c段
+        if options.caddress:
+            urls = caddlist(ip)
+        #旁站
+        elif options.pzhan:
              pang_out=removeBlacklists(pangurl(ip))
              if pang_out!=[]:
                 for pang_strs in pang_out:
                     print (Fore.LIGHTGREEN_EX + "[+]" + pang_strs)
              else:
                 print (Fore.LIGHTWHITE_EX+"[-]The host don't have any other website.")
-        elif(options.caddress):
-            urls=caddlist()
+
+        #去重+保存
         if urls!=[]:
             out= {}.fromkeys(urls).keys()
             print (Fore.LIGHTBLUE_EX + "[*]Removed same website.")
@@ -214,8 +244,9 @@ if __name__ == "__main__":
                         continue
                     else:
                         f.write(strs + "\n")
-            print (Fore.LIGHTBLUE_EX + "[*]Save as websites.txt.Total:"+str(len(out)))
+            print (Fore.LIGHTBLUE_EX + "[*]Save as websites.txt Total:"+str(len(out)))
 
+        #后台扫描
         if options.dir:
             start_urlscan = time.clock()
             domain_name = options.url
@@ -244,9 +275,13 @@ if __name__ == "__main__":
                             print (Fore.LIGHTYELLOW_EX+urls)
                         f.write(strs +"\n")
             print (Fore.LIGHTBLUE_EX+"[+]done.")
+
+        #CMS识别
         if options.cms:
             g = gwhatweb(options.url).whatweb()
 
     else:
         print "url input error"
+
+
 
